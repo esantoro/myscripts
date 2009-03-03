@@ -1,0 +1,42 @@
+#! /bin/bash
+
+export PATH=/sbin:/bin
+
+do_start() {
+	iptables -F
+	iptables -X
+	iptables-restore /etc/firewall
+	echo "Firewall started on `date +%D` at `date +%R`" >> /var/log/firewall
+}
+
+do_stop() {
+	iptables -F
+	iptables -X
+	echo "Firewall stopped on `date +%D` at `date +%R`" >> /var/log/firewall
+}
+
+do_restart() {
+	 
+	echo "Firewall *restart* on `date +%D` at `date +%R`" >> /var/log/firewall
+	do_stop
+	do_start
+}
+
+case "$1" in
+	start )	
+		do_start
+		exit 0
+	;;
+	
+	stop )
+		do_stop
+		exit 0
+	;;
+
+	restart )
+		do_restart
+		exit 0 
+	;;
+esac
+
+exit 0
